@@ -177,8 +177,12 @@ if [[ ${smartctl_version%.*} -lt 6 ]]; then
 fi
 
 device_list="$(/usr/sbin/smartctl --scan-open | awk '/^\/dev/{print $1 "|" $3}')"
+extra_device_list=
+if [ ! -z "${EXTRA_DEVICE_LIST}" ]; then
+    extra_device_list=$(cat "${EXTRA_DEVICE_LIST}")
+fi
 
-for device in ${device_list}; do
+for device in ${device_list} ${extra_device_list}; do
   disk="$(echo "${device}" | cut -f1 -d'|')"
   type="$(echo "${device}" | cut -f2 -d'|')"
   active=1
